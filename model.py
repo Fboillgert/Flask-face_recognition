@@ -1,8 +1,5 @@
 # model.py
-# 数据库 Model
-# https://www.cnblogs.com/Mixtea/p/10678594.html
 import uuid
-import secrets
 from app import db
 from datetime import datetime
 from sqlalchemy.dialects.mysql import FLOAT
