@@ -1,0 +1,97 @@
+.custom-sticky-top {
+	position: sticky;
+	top: 65px;
+}
+
+body {
+	display: flex;
+	flex-direction: column;
+	min-height: 100vh;
+}
+
+main {
+	flex: 1 0 auto;
+}
+
+footer {
+	margin-top: auto;
+	color: #FFFFFF;
+}
+
+footer *{
+	color: #FFFFFF;
+}
+
+.share {
+	position: relative;
+	width: 27px;
+}
+
+.share .share-nr {
+	display: none;
+	z-index: 100;
+	position: absolute;
+	bottom: 40px;
+	right: 0px;
+	color: #343a40;
+	background-color: #FFFFFF;
+}
+
+.share.on .share-nr {
+	display: block;
+}
+
+.share img {
+	width: 200px;
+	height: 200px;
+}
+
+.share #qrcode {
+	padding: 20px;
+}
+
+.triangle-topright-bottom-left {
+	position: absolute;
+	right: 0;
+	width: 0;
+	height: 0;
+	border-bottom: 20px solid #007bff;
+	border-right: 20px solid transparent;
+}
+
+.triangle-topright-top-right {
+	position: absolute;
+	right: 0;
+	width: 0;
+	height: 0;
+	border-top: 20px solid #f8f9fa;
+	border-left: 20px solid transparent;
+}
+
+.birthday.toast {
+	position: fixed;
+	left: 15px;
+	bottom: 15px;
+	max-height: 50vh;
+	overflow-y: auto;
+}
+
+.birthday.toast .toast-header{
+	position: sticky;
+	top: 0px;
+	background-color: white;
+}
+
+.birthday.toast .toast-body{
+	background-color: #f8f9fa;
+}
+
+@media screen and (max-width: 1000px) {
+	.sidebar {
+		margin-bottom: 10px;
+		max-height: 186px;
+		overflow-y: auto;
+	}
+}
+
+@media screen and (max-width: 575px) {}
