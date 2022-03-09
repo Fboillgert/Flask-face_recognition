@@ -25,6 +25,10 @@ capture_face = os.path.join(face_folder, 'capture_face')
 train_path = os.path.join(face_folder, 'knn_examples/train')
 abnormal_path = os.path.join(face_folder, 'knn_examples/abnormal')
 model_save_path = os.path.join(app.static_folder, 'trained_knn_model_cn.clf')
+os.makedirs(face_folder, exist_ok=True)
+os.makedirs(capture_face, exist_ok=True)
+os.makedirs(train_path, exist_ok=True)
+os.makedirs(abnormal_path, exist_ok=True)
 
 app.config['SECRET_KEY'] = b'\x96\x17\xcd\x9a9\x0b(\xac^\x91\x1a\xf6\x18\x8c\xf7\xce'  # os.urandom(16)
 app.config['JSON_AS_ASCII'] = False

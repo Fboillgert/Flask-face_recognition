@@ -22,4 +22,4 @@ Python3.9 + NVIDIA GPU
 1. 训练人脸模型，图像目录：knn/train
 2. python3 extract_face.py
 3. python3 flasker.py
-4. python3 thread_picture.py
+4. python3 camera.py
