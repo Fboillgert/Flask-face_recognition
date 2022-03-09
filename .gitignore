@@ -1,0 +1,8 @@
+*.jpg
+*.png
+*.pyc
+*.clf
+*.db
+.idea/
+*.zip
+*.7z

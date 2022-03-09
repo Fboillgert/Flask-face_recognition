@@ -1,0 +1,131 @@
+{% extends 'base.html' %}
+{% block title %}筛选数据{% endblock %}
+{% block styles %}
+<style>
+	.list-unstyled img{
+		width: 100px;
+		height: 100px;
+		cursor: pointer;
+		object-fit: cover;
+	}
+	img.green{
+		border-color: green;
+	}
+	img.red{
+		border-color: red;
+	}
+	li{
+		background-color: ghostwhite;
+	}
+	div.btn-group{
+		min-width: 150px;
+	}
+	select{
+		min-width: 110px;
+		max-width: 200px;
+	}
+</style>
+{% endblock %}
+{% block navbar %}{% endblock %}
+{% block main %}
+<div class="col-12 text-center">
+	<a href="{{ url_for('face.image_train', num=num, time=yesterday) }}">昨天</a>
+	<a href="{{ url_for('face.image_train', num=num, time=tomorrow) }}">明天</a>
+</div>
+<div class="col-12">
+	<ul class="list-unstyled">
+		{% for user_name, values in results.items() %}
+		<li class="media mb-2 shadow">
+			{% for item in values %}
+			{% if item.status == 0 %}
+			<img id="img-{{ item.face_id }}" src="{{ url_for('face.show_image', file=item.file_name()) }}" class="mr-3 img-thumbnail" alt="{{ item.user_name }}">
+			<div id="div-{{ item.face_id }}" class="media-body">
+				<h6 class="mt-1 mb-1">{{ item.user_name }} {{ item.rec }} {{ item.clarity }}</h6>
+				<div class="btn-group btn-group-sm" role="group">
+					<button class="btn btn-outline-secondary" type="button" onclick="SubmitFace('{{ item.face_id }}')">确定</button>
+					<button class="btn btn-outline-secondary" type="button" onclick="NewName('{{ item.face_id }}')">新建</button>
+					<button class="btn btn-outline-secondary" type="button" onclick="DelFace('{{ item.face_id }}')">删除</button>
+				</div>
+				<select class="form-control form-control-sm unknown" id="{{ item.face_id }}">
+					<option value="{{ item.user_name }}" data-from="{{ item.face_id }}" selected>{{ item.user_name }} {{ item.rec }}</option>
+				</select>
+			</div>
+			{% endif %}
+			{% endfor %}
+		</li>
+		{% endfor %}
+	</ul>
+</div>
+{% endblock %}
+{% block scripts %}
+<script>
+	function NewName(face_id){
+		var person = prompt("请输入图片的姓名");
+		if(person != null){
+			document.getElementById(face_id).appendChild(new Option(person, person));
+		}
+	}
+	function SubmitFace(face_id){
+		var value = document.getElementById(face_id).value;
+		$.post('{{ url_for("face.image_train") }}', {id: face_id, value: value}, function(data, status){
+			$('#img-'+face_id).addClass('green');
+			$('select#'+face_id).removeClass('unknown');
+		}).fail(function(response) {
+			console.log(response);
+			alert('Error:服务器超时,请重新提交');
+		});
+	}
+	function DelFace(face_id){
+		if(confirm("您真的确定要删除吗?不可撤销!")==true){
+			$.post('{{ url_for("face.image_train") }}', {id: face_id}, function(data, status){
+				$('#img-'+face_id).addClass('red');
+				$('#div-'+face_id).find('button').remove();
+				$('select#'+face_id).removeClass('unknown');
+				console.log(data);
+				console.log(status);
+			}).fail(function(response) {
+				console.log(response);
+				alert('Error:服务器超时,请重新提交');
+			});
+		}
+	}
+	function ajaxPredict(){
+		var itemSelect = $('select[id].unknown:first');
+		if(itemSelect.length===0){
+			return false;
+		}
+		var face_id = itemSelect.attr('id');
+		$.post('{{ url_for("face.image_predict") }}', {id: face_id, limit: 20}, function(data, status){
+			itemSelect.find('option').remove();
+			$.each(data, function(i, item){
+				itemSelect.append("<option value='"+item[1]+"' data-id='"+item[0]+"'>"+item[1]+" "+item[2]+"</option>");
+			});
+			itemSelect.removeClass('unknown');
+			return ajaxPredict();
+		});
+	}
+	// ajaxPredict();
+	function ajaxKnnPredict(){
+		var itemSelect = $('select[id].unknown:first');
+		if(itemSelect.length===0){
+			return false;
+		}
+		var face_id = itemSelect.attr('id');
+		$.post('{{ url_for("face.image_knn") }}', {id: face_id}, function(data, status){
+			// console.log(data);
+			itemSelect.find('option').remove();
+			itemSelect.append("<option value='"+data.face_name+"' data-image='"+data.img_url+"'>"+data.face_name+"</option>");
+			itemSelect.removeClass('unknown');
+			return ajaxKnnPredict();
+		}).fail(function(response) {
+			console.log(response);
+			itemSelect.removeClass('unknown');
+			return ajaxKnnPredict();
+		});
+	}
+	$('select').change(function(){
+		SubmitFace($(this).attr('id'));
+	});
+	ajaxKnnPredict();
+</script>
+{% endblock %}

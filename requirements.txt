@@ -1,0 +1,12 @@
+tqdm
+numpy
+Flask
+waitress
+requests
+scikit-learn
+opencv-python
+flask_compress
+face_recognition
+sqlalchemy
+sqlalchemy_utils
+flask_sqlalchemy
